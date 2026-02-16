@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Vibes ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            cursor: none
+        }
+
+        canvas {
+            display: block
+        }
+
+        #cursor {
+            position: fixed;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 0%, rgba(150, 100, 255, .8) 50%, transparent 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            box-shadow: 0 0 20px #a855f7, 0 0 40px #7c3aed
+        }
+
+        #ct {
+            position: fixed;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(168, 85, 247, .4);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9998;
+            transition: all .15s
+        }
+
+        #ui {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 100
+        }
+
+        #ta {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: auto
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1;
+            background: linear-gradient(135deg, #fff, #c084fc, #818cf8, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pt 3s ease-in-out infinite;
+            margin-bottom: 12px
+        }
+
+        .sub {
+            color: rgba(200, 180, 255, .7);
+            font-size: clamp(.8rem, 2.5vw, 1.1rem);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 30px
+        }
+
+        .btns {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap
+        }
+
+        button {
+            padding: 12px 28px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: .9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all .3s
+        }
+
+        .b1 {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(168, 85, 247, .5)
+        }
+
+        .b1:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 45px rgba(168, 85, 247, .9)
+        }
+
+        .b2 {
+            background: linear-gradient(135deg, #06b6d4, #0ea5e9);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(6, 182, 212, .5)
+        }
+
+        .b2:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 45px rgba(6, 182, 212, .9)
+        }
+
+        .b3 {
+            background: linear-gradient(135deg, #f472b6, #ec4899);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(244, 114, 182, .5)
+        }
+
+        .b3:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 45px rgba(244, 114, 182, .9)
+        }
+
+        #stats {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+            color: rgba(200, 180, 255, .6);
+            font-size: .8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            pointer-events: none
+        }
+
+        #stats span {
+            font-weight: 700;
+            color: #c084fc
+        }
+
+        #ml {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            color: rgba(200, 180, 255, .5);
+            font-size: .75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: all .5s
+        }
+
+        @keyframes pt {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 30px rgba(168, 85, 247, .6))
+            }
+
+            50% {
+                filter: drop-shadow(0 0 60px rgba(168, 85, 247, 1))
+            }
+        }
+
+        .rpl {
+            position: fixed;
+            border-radius: 50%;
+            border: 2px solid rgba(168, 85, 247, .8);
+            pointer-events: none;
+            animation: ra .8s ease-out forwards;
+            z-index: 200;
+            transform: translate(-50%, -50%)
+        }
+
+        @keyframes ra {
+            from {
+                width: 0;
+                height: 0;
+                opacity: 1
+            }
+
+            to {
+                width: 200px;
+                height: 200px;
+                opacity: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="c"></canvas>
+    <div id="cursor"></div>
+    <div id="ct"></div>
+    <div id="ui">
+        <div id="ta">
+            <h1>GALAXY<br>VIBES</h1>
+            <p class="sub">Move &bull; Click &bull; Explore</p>
+            <div class="btns">
+                <button class="b1" onclick="explode()">💥 Big Bang</button>
+                <button class="b2" onclick="warp()">🌀 Warp Speed</button>
+                <button class="b3" onclick="meteor()">☄️ Meteor Rain</button>
+            </div>
+        </div>
+        <div id="stats">Particles: <span id="pc">0</span> &nbsp;|&nbsp; Mode: <span id="pm">FLOAT</span></div>
+        <div id="ml">✦ Galaxy Vibes ✦</div>
+    </div>
+    <script>
+        const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+        let W = cv.width = innerWidth, H = cv.height = innerHeight, mx = W / 2, my = H / 2, wm = false, parts = [], mets = [], fr = 0;
+
+        class P {
+            constructor(x, y, b) {
+                this.x = x ?? Math.random() * W; this.y = y ?? Math.random() * H;
+                this.vx = (Math.random() - .5) * (b ? 14 : 1.5); this.vy = (Math.random() - .5) * (b ? 14 : 1.5);
+                this.sz = Math.random() * (b ? 3 : 2.5) + .5; this.al = Math.random() * .7 + .3;
+                this.life = 1; this.dc = b ? Math.random() * .015 + .008 : Math.random() * .003 + .001;
+                this.h = Math.random() * 80 + 200; this.s = Math.random() * 30 + 70;
+                this.tw = Math.random() * Math.PI * 2; this.sp = Math.random() * .3 + .1;
+                this.b = !!b; this.tl = [];
+            }
+            up() {
+                if (this.b) { this.vx *= .96; this.vy *= .96; this.x += this.vx; this.y += this.vy; this.life -= this.dc; }
+                else {
+                    const dx = mx - this.x, dy = my - this.y, d = Math.sqrt(dx * dx + dy * dy) || 1, f = Math.max(0, (150 - d)) / 150;
+                    if (wm) { this.vx += dx / d * .6; this.vy += dy / d * .6; this.vx *= .92; this.vy *= .92; }
+                    else { this.vx += dx / d * f * .12; this.vy += dy / d * f * .12; this.vx *= .98; this.vy *= .98; }
+                    this.x += this.vx + Math.sin(fr * .005 + this.tw) * this.sp;
+                    this.y += this.vy + Math.cos(fr * .007 + this.tw) * this.sp * .5;
+                    if (this.x < 0) this.x = W; if (this.x > W) this.x = 0; if (this.y < 0) this.y = H; if (this.y > H) this.y = 0;
+                }
+                if (wm && !this.b) { this.tl.push({ x: this.x, y: this.y }); if (this.tl.length > 12) this.tl.shift(); }
+                else this.tl = [];
+                this.tw += .04;
+            }
+            dr() {
+                if (this.tl.length > 1) {
+                    ctx.beginPath(); ctx.moveTo(this.tl[0].x, this.tl[0].y);
+                    for (let i = 1; i < this.tl.length; i++)ctx.lineTo(this.tl[i].x, this.tl[i].y);
+                    ctx.strokeStyle = `hsla(${this.h},${this.s}%,70%,.15)`; ctx.lineWidth = this.sz * .5; ctx.stroke();
+                }
+                const t = Math.abs(Math.sin(this.tw)), g = this.sz * (1 + t * 1.5), a = this.life * this.al * (.6 + t * .4);
+                const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, g * 3);
+                grd.addColorStop(0, `hsla(${this.h},${this.s}%,95%,${a})`);
+                grd.addColorStop(.3, `hsla(${this.h},${this.s}%,70%,${a * .6})`);
+                grd.addColorStop(1, `hsla(${this.h},${this.s}%,50%,0)`);
+                ctx.beginPath(); ctx.arc(this.x, this.y, g * 3, 0, Math.PI * 2); ctx.fillStyle = grd; ctx.fill();
+            }
+            dead() { return this.life <= 0; }
+        }
+
+        class M {
+            constructor() {
+                this.x = Math.random() * W * 1.5 - W * .25; this.y = -50;
+                this.vx = (Math.random() - .3) * 4; this.vy = Math.random() * 10 + 8;
+                this.sz = Math.random() * 3 + 1.5; this.h = Math.random() > .5 ? 270 : 190;
+                this.tl = []; this.life = 1; this.len = Math.floor(Math.random() * 20 + 15);
+            }
+            up() {
+                this.tl.push({ x: this.x, y: this.y });
+                if (this.tl.length > this.len) this.tl.shift();
+                this.x += this.vx; this.y += this.vy;
+                if (this.y > H + 50) this.life = 0;
+            }
+            dr() {
+                if (this.tl.length < 2) return;
+                const g = ctx.createLinearGradient(this.tl[0].x, this.tl[0].y, this.x, this.y);
+                g.addColorStop(0, `hsla(${this.h},100%,80%,0)`);
+                g.addColorStop(1, `hsla(${this.h},100%,90%,.9)`);
+                ctx.beginPath(); ctx.moveTo(this.tl[0].x, this.tl[0].y);
+                for (let t of this.tl) ctx.lineTo(t.x, t.y);
+                ctx.strokeStyle = g; ctx.lineWidth = this.sz; ctx.lineCap = 'round'; ctx.stroke();
+                const hg = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.sz * 5);
+                hg.addColorStop(0, 'white'); hg.addColorStop(.3, `hsla(${this.h},100%,80%,.7)`); hg.addColorStop(1, 'transparent');
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.sz * 5, 0, Math.PI * 2); ctx.fillStyle = hg; ctx.fill();
+            }
+            dead() { return this.life <= 0; }
+        }
+
+        function init() {
+            parts = [];
+            const n = Math.min(Math.floor(W * H / 6000), 200);
+            for (let i = 0; i < n; i++)parts.push(new P());
+            document.getElementById('pc').textContent = parts.length;
+        }
+
+        function conn() {
+            const md = wm ? 80 : 100;
+            for (let i = 0; i < parts.length; i++) {
+                if (parts[i].b) continue;
+                for (let j = i + 1; j < parts.length; j++) {
+                    if (parts[j].b) continue;
+                    const dx = parts[i].x - parts[j].x, dy = parts[i].y - parts[j].y, d2 = dx * dx + dy * dy;
+                    if (d2 < md * md) {
+                        const a = (1 - Math.sqrt(d2) / md) * .25, h = (parts[i].h + parts[j].h) / 2;
+                        ctx.beginPath(); ctx.moveTo(parts[i].x, parts[i].y); ctx.lineTo(parts[j].x, parts[j].y);
+                        ctx.strokeStyle = `hsla(${h},80%,70%,${a})`; ctx.lineWidth = .5; ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function neb() {
+            const t = fr * .002, gx = W * (.3 + .2 * Math.sin(t)), gy = H * (.3 + .15 * Math.cos(t * .7));
+            const g1 = ctx.createRadialGradient(gx, gy, 0, gx, gy, W * .6);
+            g1.addColorStop(0, 'hsla(270,80%,15%,.18)'); g1.addColorStop(1, 'transparent');
+            ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
+            const g2 = ctx.createRadialGradient(W - gx, H - gy, 0, W - gx, H - gy, W * .5);
+            g2.addColorStop(0, 'hsla(200,90%,12%,.15)'); g2.addColorStop(1, 'transparent');
+            ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+        }
+
+        function loop() {
+            requestAnimationFrame(loop); fr++;
+            ctx.fillStyle = `rgba(0,0,0,${wm ? .15 : .12})`; ctx.fillRect(0, 0, W, H);
+            neb(); conn();
+            parts = parts.filter(p => !p.dead());
+            for (let p of parts) { p.up(); p.dr(); }
+            mets = mets.filter(m => !m.dead());
+            for (let m of mets) { m.up(); m.dr(); }
+            while (parts.filter(p => !p.b).length < (wm ? 80 : 180)) parts.push(new P());
+            document.getElementById('pc').textContent = parts.length;
+        }
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            const c = document.getElementById('cursor'), t = document.getElementById('ct');
+            c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px';
+            setTimeout(() => { t.style.left = e.clientX + 'px'; t.style.top = e.clientY + 'px'; }, 80);
+        });
+
+        cv.addEventListener('click', e => {
+            for (let i = 0; i < 45; i++)parts.push(new P(e.clientX, e.clientY, true));
+            const r = document.createElement('div'); r.className = 'rpl';
+            r.style.left = e.clientX + 'px'; r.style.top = e.clientY + 'px';
+            document.body.appendChild(r); setTimeout(() => r.remove(), 800);
+        });
+
+        window.addEventListener('resize', () => { W = cv.width = innerWidth; H = cv.height = innerHeight; init(); });
+
+        function explode() { for (let i = 0; i < 200; i++)parts.push(new P(W / 2 + (Math.random() - .5) * 80, H / 2 + (Math.random() - .5) * 80, true)); }
+        function warp() { wm = !wm; document.getElementById('pm').textContent = wm ? 'WARP' : 'FLOAT'; const ml = document.getElementById('ml'); ml.textContent = wm ? '⚡ WARP SPEED ⚡' : '✦ Galaxy Vibes ✦'; ml.style.color = wm ? 'rgba(6,182,212,.9)' : 'rgba(200,180,255,.5)'; }
+        function meteor() { for (let i = 0; i < 20; i++)setTimeout(() => mets.push(new M()), i * 100); }
+
+        init(); loop();
+        setInterval(() => { if (Math.random() > .5) mets.push(new M()); }, 400);
+    </script>
+</body>
+
+</html>
